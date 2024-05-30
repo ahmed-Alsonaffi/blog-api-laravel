@@ -12,9 +12,21 @@ class PostController extends Controller
      */
 
     public function get_post($id){
-        $post = Post::with('category')->where('id', $id)->first();
+        $post = Post::with(['category:id,name,badge','editor:id,name,image,about'])->where('id', $id)->first();
+        $prevPost = Post::select('id','title')
+                ->where('id','<', $post->id)
+                ->orderBy('id', 'desc')->first();
+        $nextPost = Post::select('id','title')
+                ->where('id','>', $post->id)
+                ->orderBy('id', 'asc')->first();
         if(!empty($post)){
-            return response()->json($post);
+            return response()->json([
+                'navs'=>[
+                    'prev'=>$prevPost,
+                    'next'=>$nextPost
+                ],
+                'Post'=>$post
+            ]);
         }
         else{
             return response()->json([
@@ -25,10 +37,23 @@ class PostController extends Controller
     
     public function index()
     {
-        $post = Post::with("category:id,name,badge")->select("id","title","image","publish_date","cat_id")->get();
+        $post = Post::with(["category:id,name,badge",'editor:id,name,image'])->select("id","title","description","image","publish_date","cat_id",'editor_id')->get();
         return response()->json([
             'status'=>true,
             'Posts'=>$post
+        ]);
+    }
+
+    public function related_posts(Request $request)
+    {
+        $id = $request['id'];
+        $posts = Post::with(["category:id,name,badge",'editor:id,name,image'])
+            ->select("id","title","image","publish_date","cat_id","editor_id")
+            ->where("id","!=",$id)
+            ->get();
+        return response()->json([
+            'status'=>true,
+            'Posts'=>$posts
         ]);
     }
 

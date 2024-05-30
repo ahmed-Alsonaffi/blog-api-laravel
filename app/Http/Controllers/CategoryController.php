@@ -25,7 +25,7 @@ class CategoryController extends Controller
     public function get_posts(Request $request)
     {
         $page = $request['page']?$request['page']:1;
-        $post = Post::paginate(6, ['*'], 'page', $page);
+        $post = Post::with('editor:id,name,image')->paginate(6, ['*'], 'page', $page);
         return response()->json([
             
             'total_size' => $post->total(),
