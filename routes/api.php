@@ -7,6 +7,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\EditorController;
 use App\Http\Controllers\Admin\LoginController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,4 +43,11 @@ Route::group(['prefix' => 'blog'], function () {
     Route::group(['prefix' => 'auth'], function () {
         Route::post('login',[LoginController::class,'login']);
         // return "Admin";
+    });
+    Route::group(['prefix' => 'admin'], function () {
+        Route::get('posts',[PostController::class,'index']);
+        Route::get('categories',[AdminController::class,'categories']);
+        Route::get('editors',[AdminController::class,'editors']);
+        Route::get('fetcheditors',[AdminController::class,'fetchEditors']);
+        Route::post('addpost',[AdminController::class,'addPost']);
     });
