@@ -50,4 +50,5 @@ Route::group(['prefix' => 'blog'], function () {
         Route::get('editors',[AdminController::class,'editors']);
         Route::get('fetcheditors',[AdminController::class,'fetchEditors']);
         Route::post('addpost',[AdminController::class,'addPost']);
+        Route::post('addeditor',[AdminController::class,'addEditor']);
     });

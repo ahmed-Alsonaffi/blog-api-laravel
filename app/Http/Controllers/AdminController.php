@@ -56,14 +56,9 @@ class AdminController extends Controller
             // Handle validation failure, such as returning error messages
             return response()->json(['errors' => $validator->errors()], 400);
         }
-        $file = $request->file('image');
-        
-
+        $file = $request->file('image');        
         if ($file) {
-            // Generate a unique file name
             $fileName = uniqid() . '.' . $file->getClientOriginalExtension();
-
-            // Store the file in the storage/app/public directory
             // Storage::disk('public/posts')->put($fileName, file_get_contents($file));
             $file->storeAs('posts',$fileName, 'public');
 
@@ -75,7 +70,6 @@ class AdminController extends Controller
                 'cat_id' => $request->input('category'),
                 'editor_id' => $request->input('editor'),
             ]);
-
             return response()->json([
                 'status'=>true,
             ]);
@@ -85,6 +79,43 @@ class AdminController extends Controller
                 'Error'=>"Image not found",
             ]);
         }
+    }
 
+    public function addEditor(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|min:5',
+            'about' => 'required',
+            'position' => 'required',
+            'city' => 'required',
+            'image' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            // Handle validation failure, such as returning error messages
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+        $file = $request->file('image');        
+        if ($file) {
+            $fileName = uniqid() . '.' . $file->getClientOriginalExtension();
+            // Storage::disk('public/posts')->put($fileName, file_get_contents($file));
+            $file->storeAs('editors',$fileName, 'public');
+
+            DB::table('editors')->insertOrIgnore([
+                'name' => $request->input('name'),
+                'about' => $request->input('about'),
+                'position' => $request->input('position'),
+                'image' => $fileName,
+                'city' => $request->input('city'),
+            ]);
+            return response()->json([
+                'status'=>true,
+            ]);
+        }
+        else{
+            return response()->json([
+                'Error'=>"Image not found",
+            ]);
+        }
     }
 }
