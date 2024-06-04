@@ -24,11 +24,20 @@ class AdminController extends Controller
 
     public function editors()
     {
-        $categories = Editor::selectRaw('id AS value, name AS label')
+        $editors = Editor::selectRaw('id AS value, name AS label')
                                 ->get();
         return response()->json([
             'status'=>true,
-            'editors'=>$categories
+            'editors'=>$editors
+        ]);
+    }
+
+    public function fetchEditors()
+    {
+        $editors = Editor::select("id","name","position","city")->get();
+        return response()->json([
+            'status'=>true,
+            'editors'=>$editors
         ]);
     }
 
