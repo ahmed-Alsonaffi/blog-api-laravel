@@ -8,6 +8,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\EditorController;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BannerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +34,7 @@ Route::group(['prefix' => 'blog'], function () {
         Route::get('comments/{post_id}',[CommentController::class,'get_comments']);
         Route::post('add_comment',[CommentController::class,'add_comment']);
         Route::get('editors/{id}',[EditorController::class,'get_editor']);
+        Route::get('banners',[BannerController::class,'index']);
     });
     Route::group(['prefix' => 'categories'], function () {
         Route::get('posts/{category_id}',[CategoryController::class,'get_posts']);
@@ -51,4 +53,7 @@ Route::group(['prefix' => 'blog'], function () {
         Route::get('fetcheditors',[AdminController::class,'fetchEditors']);
         Route::post('addpost',[AdminController::class,'addPost']);
         Route::post('addeditor',[AdminController::class,'addEditor']);
+        Route::get('banners',[AdminController::class,'banners']);
+        Route::post('addbanner',[AdminController::class,'addBanner']);
+        Route::post('deletebanner',[AdminController::class,'deleteBanner']);
     });
