@@ -22,10 +22,10 @@ class CategoryController extends Controller
 //        return "Hello";
     }
 
-    public function get_posts(Request $request)
+    public function get_posts($cat_id,Request $request)
     {
         $page = $request['page']?$request['page']:1;
-        $post = Post::with('editor:id,name,image')->paginate(6, ['*'], 'page', $page);
+        $post = Post::with('editor:id,name,image')->where("cat_id","=",$cat_id)->paginate(4, ['*'], 'page', $page);
         return response()->json([
             
             'total_size' => $post->total(),
