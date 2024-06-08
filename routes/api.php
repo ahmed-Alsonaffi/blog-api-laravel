@@ -33,6 +33,7 @@ Route::group(['prefix' => 'blog'], function () {
         Route::get('posts/{id}',[PostController::class,'get_post']);
         Route::get('related_posts',[PostController::class,'related_posts']);
         Route::get('highlights',[PostController::class,'highlights']);
+        Route::get('increaseviews/{post_id}',[PostController::class,'addWatch']);
         Route::get('comments/{post_id}',[CommentController::class,'get_comments']);
         Route::post('add_comment',[CommentController::class,'add_comment']);
         Route::get('editors/{id}',[EditorController::class,'get_editor']);

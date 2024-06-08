@@ -13,7 +13,19 @@ class PostController extends Controller
      */
 
     public function get_post($id){
-        $post = Post::with(['category:id,name,badge','editor:id,name,image,about'])->where('id', $id)->first();
+        $post = Post::with(['category:id,name,badge','editor:id,name,image,about'])
+                    ->select(
+                        "id",
+                        "title",
+                        "description",
+                        "image",
+                        DB::raw("DATE_FORMAT(publish_date, '%b %d, %Y') as publish_date"),
+                        "cat_id",
+                        "editor_id",
+                        "content",
+                        "views"
+                        )
+                    ->where('id', $id)->first();
         $prevPost = Post::select('id','title')
                 ->where('id','<', $post->id)
                 ->orderBy('id', 'desc')->first();
@@ -105,12 +117,14 @@ class PostController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    
+    public function addWatch($id)
     {
-        //
+        DB::table('posts')
+        ->where('id', $id)
+        ->increment('views', 1);
+
+        return response()->json(['message' => 'Record updated successfully']);
     }
 
     /**
