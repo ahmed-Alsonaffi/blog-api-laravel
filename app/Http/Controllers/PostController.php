@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
-
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -38,18 +38,65 @@ class PostController extends Controller
     
     public function index()
     {
-        $post = Post::with(["category:id,name,badge",'editor:id,name,image'])->select("id","title","description","image","publish_date","cat_id",'editor_id')->get();
+        $post = Post::with(["category:id,name,badge",'editor:id,name,image'])
+        ->select("id","title","description","image","highlight","publish_date","cat_id",'editor_id')
+        ->orderBy('publish_date', 'desc')
+        ->get();
         return response()->json([
             'status'=>true,
             'Posts'=>$post
         ]);
     }
 
+    public function highlights()
+    {
+        $post = Post::with(["category:id,name,badge",'editor:id,name,image'])
+        ->select("id","title","description","image","publish_date","cat_id",'editor_id')
+        ->where("highlight","=",1)
+        ->limit(5)
+        ->orderBy('publish_date', 'desc')
+        ->get();
+        return response()->json([
+            'status'=>true,
+            'Posts'=>$post
+        ]);
+    }
+
+    public function latestPosts(Request $request)
+    {
+        $list = $request['list']?$request['list']:1;
+        $post = Post::with(["category:id,name,badge",'editor:id,name,image'])
+                ->where("highlight","!=",1)
+                ->select(
+                    "id",
+                    "title",
+                    "description",
+                    "image",
+                    DB::raw("DATE_FORMAT(publish_date, '%b %d, %Y') as publish_date"),
+                    "cat_id",
+                    "editor_id"
+                    )
+                ->paginate(3, ['*'], 'list', $list);
+        if(count($post)){
+            return response()->json($post->items());
+        }
+        else{
+            return response()->json([]);
+        }
+    }
+
     public function related_posts(Request $request)
     {
         $id = $request['id'];
         $posts = Post::with(["category:id,name,badge",'editor:id,name,image'])
-            ->select("id","title","image","publish_date","cat_id","editor_id")
+            ->select(
+                "id",
+                "title",
+                "image",
+                DB::raw("DATE_FORMAT(publish_date, '%b %d, %Y') as publish_date"),
+                "cat_id",
+                "editor_id"
+                )
             ->where("id","!=",$id)
             ->get();
         return response()->json([

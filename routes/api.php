@@ -29,8 +29,10 @@ Route::group(['prefix' => 'blog'], function () {
         Route::get('categories',[CategoryController::class,'index']);
         Route::get('categories/{id}',[CategoryController::class,'show']);
         Route::get('posts',[PostController::class,'index']);
+        Route::get('latestposts',[PostController::class,'latestPosts']);
         Route::get('posts/{id}',[PostController::class,'get_post']);
         Route::get('related_posts',[PostController::class,'related_posts']);
+        Route::get('highlights',[PostController::class,'highlights']);
         Route::get('comments/{post_id}',[CommentController::class,'get_comments']);
         Route::post('add_comment',[CommentController::class,'add_comment']);
         Route::get('editors/{id}',[EditorController::class,'get_editor']);
