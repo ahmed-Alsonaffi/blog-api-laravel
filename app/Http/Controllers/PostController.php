@@ -117,6 +117,31 @@ class PostController extends Controller
         ]);
     }
 
+    public function search(Request $request)
+    {
+        $list = $request['list']?$request['list']:1;
+        $post = Post::with(["category:id,name,badge",'editor:id,name,image'])
+                ->where("title","like","%".$request['search']."%")
+                ->select(
+                    "id",
+                    "title",
+                    "image",
+                    DB::raw("DATE_FORMAT(publish_date, '%b %d, %Y') as publish_date"),
+                    "cat_id",
+                    "editor_id"
+                    )
+                ->paginate(5, ['*'], 'list', $list);
+        if(count($post)){
+            return response()->json([
+                "result"=>$post->items(),
+                "total"=>$post->total()
+            ]);
+        }
+        else{
+            return response()->json([]);
+        }
+    }
+
     
     public function addWatch($id)
     {
