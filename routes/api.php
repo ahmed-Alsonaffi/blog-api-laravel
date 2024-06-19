@@ -9,6 +9,7 @@ use App\Http\Controllers\EditorController;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BannerController;
+use App\Http\Controllers\NotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,4 +61,5 @@ Route::group(['prefix' => 'blog'], function () {
         Route::get('banners',[AdminController::class,'banners']);
         Route::post('addbanner',[AdminController::class,'addBanner']);
         Route::post('deletebanner',[AdminController::class,'deleteBanner']);
+        Route::post('sendNotification',[NotificationController::class,'store']);
     });
