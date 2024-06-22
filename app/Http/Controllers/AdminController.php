@@ -27,6 +27,35 @@ class AdminController extends Controller
         ]);
     }
 
+    public function changeAdminInfo(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer',
+            'name' => 'required|string',
+            'email' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            // Handle validation failure, such as returning error messages
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+        try{
+            User::where('id', $request['id'])->update([
+                'name' => $request["name"],
+                'email' => $request["email"],
+            ]);
+            
+            return response()->json([
+                'status'=>true,
+            ]);
+        }catch (Exception $e) {
+            return response()->json([
+                'error'=>"an error occurred",
+            ]);
+        }
+    }
+
     public function categories()
     {
         $categories = Categories::selectRaw('id AS value, name AS label')
