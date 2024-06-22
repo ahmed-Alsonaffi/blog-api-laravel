@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\User;
 use App\Models\Categories;
 use App\Models\Editor;
 use App\Models\Banner;
@@ -14,6 +15,18 @@ use Exception;
 
 class AdminController extends Controller
 {
+
+    public function adminInfo($id)
+    {
+        $info = User::selectRaw('id, name, email')
+            ->where("id","=",$id)
+                                ->first();
+        return response()->json([
+            'status'=>true,
+            'info'=>$info
+        ]);
+    }
+
     public function categories()
     {
         $categories = Categories::selectRaw('id AS value, name AS label')

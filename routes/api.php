@@ -52,6 +52,7 @@ Route::group(['prefix' => 'blog'], function () {
         // return "Admin";
     });
     Route::group(['prefix' => 'admin'], function () {
+        Route::get('info/{id}',[AdminController::class,'adminInfo']);
         Route::get('posts',[PostController::class,'index']);
         Route::get('categories',[AdminController::class,'categories']);
         Route::get('editors',[AdminController::class,'editors']);
