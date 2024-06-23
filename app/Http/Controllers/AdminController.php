@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\Categories;
@@ -50,6 +51,34 @@ class AdminController extends Controller
                 'status'=>true,
             ]);
         }catch (Exception $e) {
+            return response()->json([
+                'error'=>"an error occurred",
+            ]);
+        }
+    }
+
+    public function changePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer',
+            'oldpassword' => 'required|string|min:8',
+            'password' => 'required|string|min:8',
+        ]);
+
+        if ($validator->fails()) {
+            // Handle validation failure, such as returning error messages
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+        $user = User::find($request['id']);
+        if (Hash::check($request['oldpassword'], $user->password)) {
+            // Update the password
+            $user->password = Hash::make($request['password']);
+            $user->save();
+            return response()->json([
+                'status'=>true,
+            ]);
+        }else{
             return response()->json([
                 'error'=>"an error occurred",
             ]);

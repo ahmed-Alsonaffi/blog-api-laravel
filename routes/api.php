@@ -54,6 +54,7 @@ Route::group(['prefix' => 'blog'], function () {
     Route::group(['prefix' => 'admin'], function () {
         Route::get('info/{id}',[AdminController::class,'adminInfo']);
         Route::post('changeadmininfo',[AdminController::class,'changeAdminInfo']);
+        Route::post('changepassword',[AdminController::class,'changePassword']);
         Route::get('posts',[PostController::class,'index']);
         Route::get('categories',[AdminController::class,'categories']);
         Route::get('editors',[AdminController::class,'editors']);
